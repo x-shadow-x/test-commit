@@ -1,0 +1,17 @@
+steps:
+  - label: ':bookmark: Tag'
+    command:
+      - 'yarn install'
+      - 'yarn version:auto'
+      - 'git push --no-verify origin HEAD:$BUILDKITE_BRANCH'
+      - 'git push --no-verify --tags'
+      - 'GIT_TAG=$(git tag --points-at)'
+      - 'MANIFEST=$(aws ecr batch-get-image --repository-name $$DOCKER_REPO_NAME --image-ids imageTag=$$DOCKER_TAG --query "images[].imageManifest" --output text)'
+      - 'aws ecr put-image --repository-name $$DOCKER_REPO_NAME --image-tag "$$GIT_TAG" --image-manifest "$$MANIFEST"'
+    env:
+      GIT_CONFIG_PARAMETERS: "'user.email=$BUILDKITE_BUILD_CREATOR_EMAIL' 'user.name=$BUILDKITE_BUILD_CREATOR'"
+      DOCKER_REPO_NAME: chaque
+      DOCKER_TAG: $DOCKER_PROD_TAG
+    agents:
+      queue: 'small-instance'
+    branches: 'master'
