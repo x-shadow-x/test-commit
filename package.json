@@ -1,11 +1,13 @@
 {
   "name": "test-commit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
+    "version:get-bump": "conventional-recommended-bump -p angular",
+    "version:auto": "yarn version --no-commit-hooks --$(yarn -s version:get-bump)"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
   "dependencies": {
     "conventional-changelog": "^3.1.24",
     "conventional-changelog-cli": "^2.1.1",
+    "conventional-recommended-bump": "^6.1.0",
     "global": "^4.4.0"
   }
 }
